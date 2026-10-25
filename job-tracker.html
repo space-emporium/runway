@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Job Application Tracker (No Sign-Up, CSV Export) | Runway</title>
+<meta name="description" content="A free, private job search tracker. Log company, role, date, status and next step for every application. Stored in your browser, with one-click CSV export.">
+<link rel="canonical" href="https://space-emporium.github.io/runway/job-tracker.html">
+<!-- NOTE: replace https://space-emporium.github.io/runway with your real domain here, in sitemap.xml and robots.txt -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Runway">
+<meta property="og:title" content="Free Job Application Tracker (No Sign-Up, CSV Export) | Runway">
+<meta property="og:description" content="A free, private job search tracker. Log company, role, date, status and next step for every application. Stored in your browser, with one-click CSV export.">
+<meta property="og:url" content="https://space-emporium.github.io/runway/job-tracker.html">
+<meta property="og:image" content="https://space-emporium.github.io/runway/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f766e">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+<!-- Google AdSense loader: uncomment after approval and replace the publisher ID.
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html"><img src="favicon.svg" alt="" width="30" height="30">Runway</a>
+    <nav class="nav" aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="runway-calculator.html">Runway Calculator</a></li><li><a href="budget-trimmer.html">Budget Trimmer</a></li><li><a href="job-tracker.html" aria-current="page">Job Tracker</a></li><li><a href="about.html">About</a></li></ul></nav>
+  </div>
+</header>
+<div class="ad-top-wrap">
+<aside class="ad-slot ad-top" aria-label="Advertisement">
+  <!-- AD SLOT: Top banner (responsive leaderboard)
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside></div>
+<div class="container layout has-sidebar">
+<main id="main">
+<h1>Job Search Tracker</h1>
+<p class="lead">Keep every application, status and next step in one place. No account, and nothing leaves your browser. Export to CSV whenever you like.</p>
+
+<div id="tracker">
+<section class="card" aria-labelledby="form-title">
+  <h2 id="form-title">Add an application</h2>
+  <form id="job-form" novalidate>
+    <div class="form-grid">
+      <div class="field"><label for="j-company">Company <span aria-hidden="true">*</span></label><input type="text" id="j-company" required autocomplete="off"></div>
+      <div class="field"><label for="j-role">Role <span aria-hidden="true">*</span></label><input type="text" id="j-role" required autocomplete="off"></div>
+      <div class="field"><label for="j-date">Date applied</label><input type="date" id="j-date"></div>
+      <div class="field"><label for="j-status">Status</label><select id="j-status"></select></div>
+      <div class="field"><label for="j-next">Next step</label><input type="text" id="j-next" placeholder="e.g. Follow up with recruiter"></div>
+      <div class="field"><label for="j-next-date">Next step date</label><input type="date" id="j-next-date"></div>
+      <div class="field"><label for="j-link">Job posting link</label><input type="url" id="j-link" placeholder="https://"></div>
+      <div class="field"><label for="j-notes">Notes</label><input type="text" id="j-notes" placeholder="Referral from Sam, salary range…"></div>
+    </div>
+    <p id="form-error" class="small" role="alert" style="color:#b42318;min-height:1.2em;margin:.75rem 0 0"></p>
+    <div class="btn-row" style="margin-top:.25rem">
+      <button type="submit" class="btn" id="submit-job">Add application</button>
+      <button type="button" class="btn ghost" id="cancel-edit" hidden>Cancel</button>
+    </div>
+  </form>
+</section>
+
+<section class="card" aria-labelledby="list-h">
+  <div class="toolbar">
+    <div><h2 id="list-h" style="margin-bottom:.4rem">Your applications</h2><div class="counts" id="counts"></div></div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:end">
+      <div class="field"><label for="search" class="small">Search</label><input type="text" id="search" placeholder="Company, role…" style="min-width:160px"></div>
+      <div class="field"><label for="filter" class="small">Status</label><select id="filter"></select></div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <caption class="sr-only">Job applications</caption>
+      <thead><tr><th>Company</th><th>Role</th><th>Applied</th><th>Status</th><th>Next step</th><th><span class="sr-only">Actions</span></th></tr></thead>
+      <tbody id="jobs-body"></tbody>
+    </table>
+  </div>
+  <div class="btn-row" style="justify-content:space-between;align-items:center">
+    <button type="button" class="btn secondary" id="export-csv">Export CSV</button>
+    <button type="button" class="btn danger small" id="clear-jobs">Delete all</button>
+  </div>
+  <p id="status-msg" class="small muted" role="status" style="margin:.5rem 0 0"></p>
+</section>
+</div>
+
+
+<aside class="ad-slot ad-incontent" aria-label="Advertisement">
+  <!-- AD SLOT: In-content, below tracker
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside>
+
+<section class="card prose" aria-labelledby="tips-h">
+  <h2 id="tips-h">Keeping a job search moving</h2>
+  <ul>
+    <li><strong>Always set a next step.</strong> A follow-up date turns a list into a plan.</li>
+    <li><strong>Follow up after about a week</strong> if you haven't heard back. A short, friendly note is enough.</li>
+    <li><strong>Back up regularly.</strong> Your data lives only in this browser, so export a CSV now and then (it opens in Excel, Google Sheets or Numbers).</li>
+  </ul>
+</section>
+</main>
+<div class="sidebar">
+<aside class="ad-slot ad-sidebar" aria-label="Advertisement">
+  <!-- AD SLOT: Sidebar 300x600 (desktop only, hidden on mobile)
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside></div>
+</div>
+<footer class="site-footer">
+  <div class="container">
+    <nav aria-label="Footer"><ul>
+      <li><a href="index.html">Home</a></li><li><a href="runway-calculator.html">Runway Calculator</a></li>
+      <li><a href="budget-trimmer.html">Budget Trimmer</a></li><li><a href="job-tracker.html">Job Tracker</a></li>
+      <li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="contact.html">Contact</a></li>
+    </ul></nav>
+    <p class="disclaimer"><strong>Not financial advice.</strong> Runway's tools do simple arithmetic on the numbers you enter. They don't know your taxes, benefits rules or personal situation. For decisions that matter, talk to a qualified professional.</p>
+    <p>© <span id="year">2026</span> Runway. Free to use. Your data stays in your browser.</p>
+  </div>
+</footer>
+<script src="assets/js/common.js" defer></script>
+<script src="assets/js/core.js" defer></script>
+<script src="assets/js/tracker.js" defer></script>
+</body>
+</html>

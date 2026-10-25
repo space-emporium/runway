@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Savings Runway Calculator: How Long Will My Savings Last? | Runway</title>
+<meta name="description" content="Free savings runway calculator. Enter savings, severance, monthly expenses and income to see how many months your money lasts and the date it runs out.">
+<link rel="canonical" href="https://space-emporium.github.io/runway/runway-calculator.html">
+<!-- NOTE: replace https://space-emporium.github.io/runway with your real domain here, in sitemap.xml and robots.txt -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Runway">
+<meta property="og:title" content="Savings Runway Calculator: How Long Will My Savings Last? | Runway">
+<meta property="og:description" content="Free savings runway calculator. Enter savings, severance, monthly expenses and income to see how many months your money lasts and the date it runs out.">
+<meta property="og:url" content="https://space-emporium.github.io/runway/runway-calculator.html">
+<meta property="og:image" content="https://space-emporium.github.io/runway/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f766e">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Savings Runway Calculator","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://space-emporium.github.io/runway/runway-calculator.html"}</script>
+<!-- Google AdSense loader: uncomment after approval and replace the publisher ID.
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html"><img src="favicon.svg" alt="" width="30" height="30">Runway</a>
+    <nav class="nav" aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="runway-calculator.html" aria-current="page">Runway Calculator</a></li><li><a href="budget-trimmer.html">Budget Trimmer</a></li><li><a href="job-tracker.html">Job Tracker</a></li><li><a href="about.html">About</a></li></ul></nav>
+  </div>
+</header>
+<div class="ad-top-wrap">
+<aside class="ad-slot ad-top" aria-label="Advertisement">
+  <!-- AD SLOT: Top banner (responsive leaderboard)
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside></div>
+<div class="container layout has-sidebar">
+<main id="main">
+<h1>Savings Runway Calculator</h1>
+<p class="lead">See how many months your savings will last, and the date they'd run out, based on what you spend and what's still coming in.</p>
+
+<section class="card" aria-labelledby="inputs-h">
+  <h2 id="inputs-h" class="sr-only">Your numbers</h2>
+  <form id="runway-form" novalidate>
+    <div class="form-grid">
+      <div class="field"><label for="savings">Savings you can use</label>
+        <span class="money"><input type="text" inputmode="decimal" id="savings" placeholder="12,000" aria-describedby="savings-hint"></span>
+        <span class="hint" id="savings-hint">Cash and savings you'd actually spend. Leave out retirement accounts.</span></div>
+      <div class="field"><label for="severance">Severance or other lump sum</label>
+        <span class="money"><input type="text" inputmode="decimal" id="severance" placeholder="0" aria-describedby="severance-hint"></span>
+        <span class="hint" id="severance-hint">Optional. Enter what actually reaches your account.</span></div>
+      <div class="field"><label for="expenses">Monthly expenses</label>
+        <span class="money"><input type="text" inputmode="decimal" id="expenses" placeholder="3,000" aria-describedby="expenses-hint"></span>
+        <span class="hint" id="expenses-hint">Everything you spend in a typical month.</span>
+        <span class="hint" id="items-note" hidden>Filled in from your itemized list below.</span></div>
+      <div class="field"><label for="income">Monthly income</label>
+        <span class="money"><input type="text" inputmode="decimal" id="income" placeholder="1,000" aria-describedby="income-hint"></span>
+        <span class="hint" id="income-hint">Optional. E.g. unemployment benefits, side gigs, a partner's contribution. Use the amount you actually receive.</span></div>
+      <div class="field"><label for="start-date">Starting from</label>
+        <input type="date" id="start-date"></div>
+    </div>
+
+    <details style="margin-top:1.25rem">
+      <summary>Itemize my monthly expenses (optional)</summary>
+      <p class="hint" style="margin-top:.5rem">Add a line for each bill. The total fills in “Monthly expenses” for you.</p>
+      <div id="expense-items" class="item-list"></div>
+      <div class="btn-row" style="align-items:center;justify-content:space-between">
+        <button type="button" class="btn secondary small" id="add-item">+ Add expense</button>
+        <span>Total: <strong id="items-total">$0</strong></span>
+      </div>
+    </details>
+
+    <div class="btn-row">
+      <button type="submit" class="btn">Calculate runway</button>
+      <button type="button" class="btn secondary" id="example">Try an example</button>
+      <button type="button" class="btn ghost" id="reset">Clear</button>
+    </div>
+    <p class="hint" style="margin-top:.75rem">Results update as you type. Your numbers are saved only in this browser.</p>
+  </form>
+
+  <section id="results" class="results" aria-live="polite" hidden>
+    <h2>Your runway</h2>
+    <div class="stat-grid">
+      <div class="stat big"><div class="k">Runway</div><div class="v" id="out-months">0</div><div class="s" id="out-months-sub">months</div></div>
+      <div class="stat"><div class="k">Days</div><div class="v" id="out-days">0</div><div class="s">from your start date</div></div>
+      <div class="stat"><div class="k">Money runs out</div><div class="v" id="out-date" style="font-size:1.25rem">—</div><div class="s">if nothing changes</div></div>
+    </div>
+    <p class="small muted" style="margin-top:.75rem">Starting balance <strong id="out-balance">$0</strong> · Net burn <strong id="out-burn">$0</strong></p>
+    <p id="out-message" class="notice"></p>
+
+    <div class="whatif">
+      <label class="label" for="cut">What if I cut <output id="cut-out" for="cut">$0/month</output> from my expenses?</label>
+      <input type="range" id="cut" min="0" max="3000" step="25" value="0">
+      <p id="cut-result" class="small" style="margin:.25rem 0 0">Drag the slider to see how a monthly cut changes your runway.</p>
+    </div>
+
+    <div class="chart-wrap">
+      <h3>Balance at the start of each month</h3>
+      <div class="chart-legend"><span><span class="swatch" style="background:#0f766e"></span>Current plan</span><span id="legend-cut" hidden><span class="swatch" style="background:#99d5cc"></span>With your cut</span></div>
+      <div id="chart"></div>
+      <p class="small muted" id="chart-note"></p>
+      <details><summary>Show as a table</summary>
+        <div class="table-wrap" style="margin-top:.5rem"><table><thead><tr><th>Month</th><th class="num">Start balance</th><th class="num">End balance</th></tr></thead><tbody id="schedule-body"></tbody></table></div>
+      </details>
+    </div>
+  </section>
+</section>
+
+
+<aside class="ad-slot ad-incontent" aria-label="Advertisement">
+  <!-- AD SLOT: In-content, after results
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside>
+
+<section class="card prose" aria-labelledby="how-h">
+  <h2 id="how-h">How the calculation works</h2>
+  <p>Your <strong>starting balance</strong> is savings plus any lump sum. Your <strong>net burn</strong> is monthly expenses minus monthly income. Runway is simply <em>starting balance ÷ net burn</em>.</p>
+  <p>Example: $12,000 in savings, $3,000 of expenses and $1,000 of income means you burn $2,000 a month, so your runway is <strong>6 months</strong>.</p>
+  <h3>What this calculator doesn't do</h3>
+  <ul>
+    <li>It doesn't work out taxes, benefit eligibility or benefit amounts. Enter the money you actually receive.</li>
+    <li>It assumes your expenses and income stay the same every month. Re-run it when something changes.</li>
+    <li>It ignores interest, inflation and one-off costs. Keep a buffer for surprises.</li>
+  </ul>
+  <p class="small muted">Not financial advice. This is a planning aid that does arithmetic on your numbers.</p>
+</section>
+</main>
+<div class="sidebar">
+<aside class="ad-slot ad-sidebar" aria-label="Advertisement">
+  <!-- AD SLOT: Sidebar 300x600 (desktop only, hidden on mobile)
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside></div>
+</div>
+<footer class="site-footer">
+  <div class="container">
+    <nav aria-label="Footer"><ul>
+      <li><a href="index.html">Home</a></li><li><a href="runway-calculator.html">Runway Calculator</a></li>
+      <li><a href="budget-trimmer.html">Budget Trimmer</a></li><li><a href="job-tracker.html">Job Tracker</a></li>
+      <li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="contact.html">Contact</a></li>
+    </ul></nav>
+    <p class="disclaimer"><strong>Not financial advice.</strong> Runway's tools do simple arithmetic on the numbers you enter. They don't know your taxes, benefits rules or personal situation. For decisions that matter, talk to a qualified professional.</p>
+    <p>© <span id="year">2026</span> Runway. Free to use. Your data stays in your browser.</p>
+  </div>
+</footer>
+<script src="assets/js/common.js" defer></script>
+<script src="assets/js/core.js" defer></script>
+<script src="assets/js/runway.js" defer></script>
+</body>
+</html>

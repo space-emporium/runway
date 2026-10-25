@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Budget Trimmer: See How Much Runway Each Cut Buys | Runway</title>
+<meta name="description" content="List your monthly expenses, mark them essential or flexible, and see how many extra months of runway each cut buys. Free and private, saved only in your browser.">
+<link rel="canonical" href="https://space-emporium.github.io/runway/budget-trimmer.html">
+<!-- NOTE: replace https://space-emporium.github.io/runway with your real domain here, in sitemap.xml and robots.txt -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Runway">
+<meta property="og:title" content="Budget Trimmer: See How Much Runway Each Cut Buys | Runway">
+<meta property="og:description" content="List your monthly expenses, mark them essential or flexible, and see how many extra months of runway each cut buys. Free and private, saved only in your browser.">
+<meta property="og:url" content="https://space-emporium.github.io/runway/budget-trimmer.html">
+<meta property="og:image" content="https://space-emporium.github.io/runway/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f766e">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+<!-- Google AdSense loader: uncomment after approval and replace the publisher ID.
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html"><img src="favicon.svg" alt="" width="30" height="30">Runway</a>
+    <nav class="nav" aria-label="Main"><ul><li><a href="index.html">Home</a></li><li><a href="runway-calculator.html">Runway Calculator</a></li><li><a href="budget-trimmer.html" aria-current="page">Budget Trimmer</a></li><li><a href="job-tracker.html">Job Tracker</a></li><li><a href="about.html">About</a></li></ul></nav>
+  </div>
+</header>
+<div class="ad-top-wrap">
+<aside class="ad-slot ad-top" aria-label="Advertisement">
+  <!-- AD SLOT: Top banner (responsive leaderboard)
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside></div>
+<div class="container layout has-sidebar">
+<main id="main">
+<h1>Budget Trimmer</h1>
+<p class="lead">List what you spend each month, mark each item as essential or flexible, and see how much extra time every cut would buy you.</p>
+
+<div id="trimmer">
+<section class="card" aria-labelledby="fin-h">
+  <h2 id="fin-h">Your starting point</h2>
+  <div class="form-grid">
+    <div class="field"><label for="t-savings">Savings you can use (incl. severance)</label><span class="money"><input type="text" inputmode="decimal" id="t-savings" placeholder="12,000"></span></div>
+    <div class="field"><label for="t-income">Monthly income</label><span class="money"><input type="text" inputmode="decimal" id="t-income" placeholder="0" aria-describedby="t-income-hint"></span><span class="hint" id="t-income-hint">Benefits, side gigs, etc. The amount you actually receive.</span></div>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="exp-h">
+  <h2 id="exp-h">Monthly expenses</h2>
+  <form id="add-form" class="form-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));align-items:end" novalidate>
+    <div class="field"><label for="new-name">Expense</label><input type="text" id="new-name" placeholder="e.g. Gym"></div>
+    <div class="field"><label for="new-cat">Category</label><input type="text" id="new-cat" list="cat-list" placeholder="Health"></div>
+    <div class="field"><label for="new-amount">Per month</label><span class="money"><input type="text" inputmode="decimal" id="new-amount" placeholder="60"></span></div>
+    <div class="field"><label for="new-type">Type</label><select id="new-type"><option value="flexible">Flexible</option><option value="essential">Essential</option></select></div>
+    <div class="field"><button type="submit" class="btn">Add expense</button></div>
+  </form>
+  <datalist id="cat-list"></datalist>
+  <p id="add-error" class="small" role="alert" style="color:#b42318;min-height:1.2em;margin:.5rem 0"></p>
+
+  <div class="table-wrap">
+    <table>
+      <caption class="sr-only">Your monthly expenses and how much runway cutting each would add</caption>
+      <thead><tr><th>Expense</th><th>Category</th><th class="num">Per month</th><th>Type</th><th class="num">Runway if cut</th><th>Cut?</th><th><span class="sr-only">Delete</span></th></tr></thead>
+      <tbody id="items-body"></tbody>
+    </table>
+  </div>
+  <div class="btn-row" style="justify-content:flex-end"><button type="button" class="btn danger small" id="clear-all">Delete all expenses</button></div>
+</section>
+
+<section class="card" aria-labelledby="sum-h" aria-live="polite">
+  <h2 id="sum-h">Your runway</h2>
+  <div class="stat-grid">
+    <div class="stat"><div class="k">Today</div><div class="v" id="s-current">—</div><div class="s" id="s-current-sub"></div></div>
+    <div class="stat big"><div class="k">With the cuts you ticked</div><div class="v" id="s-selected">—</div><div class="s" id="s-selected-sub"></div></div>
+    <div class="stat"><div class="k">Bare-bones</div><div class="v" id="s-bare">—</div><div class="s" id="s-bare-sub"></div></div>
+  </div>
+  <p class="small muted" style="margin-top:.75rem">Monthly spending: <strong id="s-total">$0</strong> (<span id="s-split"></span>)</p>
+</section>
+
+
+<aside class="ad-slot ad-incontent" aria-label="Advertisement">
+  <!-- AD SLOT: In-content, after results
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside>
+
+<div class="form-grid" style="gap:1.5rem">
+  <section class="card" aria-labelledby="top-h" style="margin:0"><h2 id="top-h">Biggest flexible cuts</h2><ul id="top-cuts" style="padding-left:1.1rem;margin:0"></ul></section>
+  <section class="card" aria-labelledby="cat-h" style="margin:0"><h2 id="cat-h">By category</h2><ul id="cat-breakdown" style="list-style:none;padding:0;margin:0"></ul></section>
+</div>
+</div>
+
+<section class="card prose" aria-labelledby="tips-h" style="margin-top:1.5rem">
+  <h2 id="tips-h">Tips for trimming without misery</h2>
+  <ul>
+    <li><strong>Pause, don't cancel.</strong> Many subscriptions and memberships can be frozen for a few months.</li>
+    <li><strong>Call your providers.</strong> Phone, internet and insurance companies often have cheaper plans or hardship options if you ask.</li>
+    <li><strong>Go after the big ones first.</strong> One large flexible cost usually buys more time than five small ones.</li>
+  </ul>
+  <p class="small muted">Your list is saved in this browser's local storage only. Clearing your browser data deletes it. Not financial advice.</p>
+</section>
+</main>
+<div class="sidebar">
+<aside class="ad-slot ad-sidebar" aria-label="Advertisement">
+  <!-- AD SLOT: Sidebar 300x600 (desktop only, hidden on mobile)
+       After AdSense approval: 1) uncomment the AdSense loader in <head>,
+       2) replace ca-pub-XXXXXXXXXXXXXXXX and data-ad-slot with your own IDs,
+       3) uncomment the block below and delete the "Ad space" placeholder span.
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="0000000000"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+  <span class="ad-label">Ad space</span>
+</aside></div>
+</div>
+<footer class="site-footer">
+  <div class="container">
+    <nav aria-label="Footer"><ul>
+      <li><a href="index.html">Home</a></li><li><a href="runway-calculator.html">Runway Calculator</a></li>
+      <li><a href="budget-trimmer.html">Budget Trimmer</a></li><li><a href="job-tracker.html">Job Tracker</a></li>
+      <li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="contact.html">Contact</a></li>
+    </ul></nav>
+    <p class="disclaimer"><strong>Not financial advice.</strong> Runway's tools do simple arithmetic on the numbers you enter. They don't know your taxes, benefits rules or personal situation. For decisions that matter, talk to a qualified professional.</p>
+    <p>© <span id="year">2026</span> Runway. Free to use. Your data stays in your browser.</p>
+  </div>
+</footer>
+<script src="assets/js/common.js" defer></script>
+<script src="assets/js/core.js" defer></script>
+<script src="assets/js/trimmer.js" defer></script>
+</body>
+</html>

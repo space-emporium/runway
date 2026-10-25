@@ -1,0 +1,4 @@
+# ads.txt for Google AdSense.
+# After approval, replace pub-XXXXXXXXXXXXXXXX with your publisher ID (AdSense > Account > Settings),
+# keep the rest of the line exactly as is, and remove these comment lines if you like.
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

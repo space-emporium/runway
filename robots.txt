@@ -1,0 +1,5 @@
+# REPLACE https://space-emporium.github.io/runway with your real domain.
+User-agent: *
+Allow: /
+
+Sitemap: https://space-emporium.github.io/runway/sitemap.xml
